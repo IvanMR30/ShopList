@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="crl-namespace:ShopList.Gui.ViewModels"
              xmlns:model="clr-namespace:ShopList.Gui.Models"
-             x:Class="ShopList.Gui.Views.ShopListPage"
+              x:Class="ShopList.Gui.Views.ShopListPage"
              Title="Lista de compras">
     <Grid RowDefinitions="Auto,*" >
         <Grid Grid.Row="0" Grid.Column="0" Padding="8" RowSpacing="4" ColumnSpacing="4" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*,Auto" >
