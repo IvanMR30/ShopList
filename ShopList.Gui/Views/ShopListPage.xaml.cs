@@ -8,6 +8,7 @@ public partial class ShopListPage : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = new ShopListViewModel();
+
 	}
 
 }

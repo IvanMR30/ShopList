@@ -2,18 +2,33 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="crl-namespace:ShopList.Gui.ViewModels"
+             xmlns:model="clr-namespace:ShopList.Gui.Models"
              x:Class="ShopList.Gui.Views.ShopListPage"
              Title="Lista de compras">
     <Grid RowDefinitions="Auto,*" >
         <Grid Grid.Row="0" Grid.Column="0" Padding="8" RowSpacing="4" ColumnSpacing="4" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*,Auto" >
             <Label FontSize="Medium" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0" Text="Producto:" ></Label>
-            <Entry Grid.Row="0" Grid.Column="1" BackgroundColor="#f0f0f0" TextColor="Black"></Entry>
+            <Entry Grid.Row="0" Grid.Column="1" BackgroundColor="#f0f0f0" TextColor="Black" Text="{Binding NombreDelArticulo}" FontSize="Medium"></Entry>
             <Label FontSize="Medium" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"  Text="Cantidad:" ></Label>
-            <Entry Grid.Row="1" Grid.Column="1" BackgroundColor="#f0f0f0" TextColor="Black" ></Entry>
-            <Button Grid.Row="0" Grid.Column="2" Text="+" FontSize="Medium" ></Button>
-            <Button Grid.Row="1" Grid.Column="2" Text="X"  ></Button>
+            <Entry Grid.Row="1" Grid.Column="1" BackgroundColor="#f0f0f0" TextColor="Black" FontSize="Medium" Text="{Binding CantidadAComprar}" ></Entry>
+            <Button Grid.Row="0" Grid.Column="2" Text="+" FontSize="Medium" TextColor="Black" Command="{Binding AgregarShopListItemCommand}" ></Button>
+            <Button Grid.Row="1" Grid.Column="2" Text="X" TextColor="Black"></Button>
         </Grid>
-        <CollectionView  Grid.Row="1" Grid.Column="0" EmptyView="Aun no se han registrado productos"  BackgroundColor="Red" ItemsSource="{Binding Items}">
+        <CollectionView  Grid.Row="1" Grid.Column="0" EmptyView="Aun no se han registrado productos"  BackgroundColor="Blue" ItemsSource="{Binding Items}" SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Item">
+                    <Border>
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5"></RoundRectangle>
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="8,2" BackgroundColor="LightGreen">
+                        <CheckBox IsChecked="{Binding Comprado}" ></CheckBox>
+                        <Label Grid.Column="1" TextColor="Black" Text="{Binding Nombre}" VerticalOptions="Center"></Label>
+                        <Label Grid.Column="2" TextColor="Black" Text="{Binding Cantidad}" VerticalOptions="Center"></Label>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
         </CollectionView>
     </Grid>
 </ContentPage>
