@@ -12,9 +12,9 @@
             <Label FontSize="Medium" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"  Text="Cantidad:" ></Label>
             <Entry Grid.Row="1" Grid.Column="1" BackgroundColor="#f0f0f0" TextColor="Black" FontSize="Medium" Text="{Binding CantidadAComprar}" ></Entry>
             <Button Grid.Row="0" Grid.Column="2" Text="+" FontSize="Medium" TextColor="Black" Command="{Binding AgregarShopListItemCommand}" ></Button>
-            <Button Grid.Row="1" Grid.Column="2" Text="X" TextColor="Black"></Button>
+            <Button Grid.Row="1" Grid.Column="2" Text="X" TextColor="Black" Command="{Binding EliminarShopListItemCommand}"></Button>
         </Grid>
-        <CollectionView  Grid.Row="1" Grid.Column="0" EmptyView="Aun no se han registrado productos"  BackgroundColor="Blue" ItemsSource="{Binding Items}" SelectionMode="Single">
+        <CollectionView  Grid.Row="1" Grid.Column="0" EmptyView="Aun no se han registrado productos"  BackgroundColor="Blue" ItemsSource="{Binding Items}" SelectedItem="{Binding ItemSeleccionado}" SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Item">
                     <Border>
