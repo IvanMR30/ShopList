@@ -9,6 +9,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 //using System.Windows.Input;
 using ShopList.Gui.Models;
+using ShopList.Gui.Persistence;
+using System.Threading.Tasks;
 
 namespace ShopList.Gui.ViewsModels
 {
@@ -19,49 +21,24 @@ namespace ShopList.Gui.ViewsModels
         [ObservableProperty]
         private int _cantidadAComprar = 1;
         [ObservableProperty]
-        private Item? _itemSeleccionado = null;
+        private Item? _elementoSeleccionado = null;
+        [ObservableProperty]
+        private ObservableCollection<Item> _items = null;
+        private ShopListDatabase? _database = null;
 
-        public ObservableCollection<Item> Items { get; }
-        // public string NombreDelArticulo
-        //{
-        //  get => _nombreDelArticulo;
-        //set
-        // {
-        //   if (value != _nombreDelArticulo)
-        // {
-        //   _nombreDelArticulo = value;
-        // OnPropertyChanged(nameof(NombreDelArticulo));
-        //}
-        //  }
-        //}
-        // public int CantidadAComprar
-        //{
-        //  get => _cantidadAComprar;
-        //set
-        //{
-        //  if (value != _cantidadAComprar)
-        //{
-        //  _cantidadAComprar = value;
-        //OnPropertyChanged(nameof(CantidadAComprar));
-        //         }
-        //       }
-        // }
-
-
-        //public ICommand AgregarShopListItemCommand { get; private set; }
-        public ShopListViewModel() {
-
+        public ShopListViewModel()
+        {
+            _database = new ShopListDatabase();
             Items = new ObservableCollection<Item>();
-            CargarDatos();
+            GetItems();
             if (Items.Count > 0)
             {
-                
+                ElementoSeleccionado = Items.First();
             }
             else
             {
-
+                ElementoSeleccionado=null;
             }
-            // AgregarShopListItemCommand=new Command(AgregarShopListItem);
         }
         [RelayCommand]
         private void CargarDatos()
@@ -74,46 +51,57 @@ namespace ShopList.Gui.ViewsModels
         [RelayCommand]
         public void EliminarShopListItem()
         {
-            var indice = Items.IndexOf(ItemSeleccionado);
+            var indice = Items.IndexOf(_elementoSeleccionado);
             Item? nuevoSeleccionado;
             if (Items.Count > 1)
             {
-                if (indice <Items.Count-1) {
-                    nuevoSeleccionado = Items[indice+1];
+                if (indice < Items.Count - 1)
+                {
+                    nuevoSeleccionado = Items[indice + 1];
                 }
                 else
                 {
                     nuevoSeleccionado = Items[indice - 1];
                 }
             }
-            else { 
-            nuevoSeleccionado=null;
+            else
+            {
+                nuevoSeleccionado = null;
             }
-           Items.Remove(ItemSeleccionado);
-            ItemSeleccionado = nuevoSeleccionado;
+            Items.Remove(_elementoSeleccionado);
+            ElementoSeleccionado = nuevoSeleccionado;
         }
 
-            [RelayCommand]
-            public void AgregarShopListItem()
+        [RelayCommand]
+        public async void AgregarShopListItem()
+        {
+            if (string.IsNullOrEmpty(NombreDelArticulo) || CantidadAComprar <= 0)
             {
-                if (string.IsNullOrEmpty(NombreDelArticulo) || CantidadAComprar <= 0)
-                {
-                    return;
-                }
-                Random generador = new Random();
-                var item = new Item
-                {
-                    Id = generador.Next(),
-                    Nombre = NombreDelArticulo,
-                    Cantidad = CantidadAComprar,
-                    Comprado = false,
-                };
-                Items.Add(item);
-                NombreDelArticulo = string.Empty;
-                CantidadAComprar = 1;
+                return;
             }
-            //private void OnPropertyChanged(string propertyName) { 
-            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var item = new Item
+            {
+                //Id = generador.Next(),
+                Nombre = NombreDelArticulo,
+                Cantidad = CantidadAComprar,
+                Comprado = false,
+            };
+            //Items.Add(item);
+            await _database.SaveItemAsync(item);
+            GetItems();
+            _elementoSeleccionado = item;
+            NombreDelArticulo = string.Empty;
+            CantidadAComprar = 1;
+        }
+        private async void GetItems()
+        {
+            IEnumerable<Item> itemFromdb = await _database.GetAllItemsAsync();
+            Items = new ObservableCollection<Item>(itemFromdb);
+            //foreach (Item item in itemFromdb)
+            //{
+            //    Items.Add(item);
             //}
         }
-    } 
+    }
+} 
+
